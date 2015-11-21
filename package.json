@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -15,6 +16,9 @@
     "react": "^0.14.3",
     "react-addons-update": "^0.14.3",
     "react-dnd": "^2.0.2",
+    "react-dnd-html5-backend": "^2.0.0",
+    "react-dom": "^0.14.3",
+    "react-redux": "^4.0.0",
     "react-router": "^1.0.0",
     "redux": "^3.0.4",
     "redux-actions": "^0.8.0"
@@ -24,6 +28,7 @@
     "express": "^4.13.3",
     "grunt": "^0.4.5",
     "grunt-browserify": "^4.0.1",
+    "grunt-contrib-watch": "^0.6.1",
     "load-grunt-tasks": "^3.3.0",
     "serve-static": "^1.10.0"
   }
