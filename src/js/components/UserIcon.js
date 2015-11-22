@@ -9,6 +9,7 @@ import FallbackImage from './FallbackImage';
     {
         drop(props, monitor) {
             props.onDrop(props.role);
+            return {};
         },
 
         canDrop(props) {
@@ -25,10 +26,11 @@ import FallbackImage from './FallbackImage';
     {
         beginDrag(props) {
             props.onDrag();
+            return {};
         },
 
         endDrag(props) {
-            props.onEnd();
+            if (props.onEnd) props.onEnd();
         },
 
         canDrag(props) {
