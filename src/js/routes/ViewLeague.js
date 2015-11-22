@@ -1,7 +1,17 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
-export default props => (
-    <div>
-        View League
-    </div>
-);
+import { middleware, RESOLVED, PENDING, REJECTED } from '../util/middleware-decorator';
+
+@connect(state => state)
+@middleware([])
+export default class extends React.Component {
+
+    render() {
+        return (
+            <div>
+                View League
+            </div>
+        );
+    }
+}

@@ -23,5 +23,34 @@ module.exports = function(grunt) {
                }
            }
        },
-    })
+
+       sass: {
+           dev: {
+               options: {
+                  style: 'nested'
+               },
+               files: {
+                   "build/css/client.css": "src/css/index.scss"
+               }
+           }
+       },
+
+       watch: {
+           css: {
+                files: ['src/css/**'],
+                tasks: ['sass']
+            },
+            js: {
+                files: ['src/js/**'],
+                tasks: ['browserify']
+            },
+       },
+
+       concurrent: {
+           watch: ['watch:css', 'watch:js'],
+           build: ['sass', 'browserify']
+       }
+   });
+
+   grunt.registerTask('default', ['concurrent:build', 'concurrent:watch']);
 }
