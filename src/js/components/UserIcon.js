@@ -1,20 +1,65 @@
 import React from 'react';
 import classNames from 'classnames';
-import Facebook from '../facebook';
+import { DragSource, DropTarget } from 'react-dnd';
 
 import FallbackImage from './FallbackImage';
 
-export default props => {
-    const { className, name, src, ...rest } = props;
-    const compClass = classNames('user-icon', className);
+@DropTarget(
+    'contestant',
+    {
+        drop(props, monitor) {
+            props.onDrop(props.role);
+        },
 
-    return (
-        <div className={compClass} {...rest} draggable={true}>
-            <FallbackImage className="image" src={src} alt={name}>
-                <div className="user-icon-fallback">
-                    {name}
-                </div>
-            </FallbackImage>
-        </div>
-    )
+        canDrop(props) {
+            return !!props.onDrop;
+        }
+    },
+    (connect, monitor) => ({
+        dropTarget: connect.dropTarget(),
+        isOver: monitor.isOver()
+    })
+)
+@DragSource(
+    'contestant',
+    {
+        beginDrag(props) {
+            props.onDrag();
+        },
+
+        endDrag(props) {
+            props.onEnd();
+        },
+
+        canDrag(props) {
+            return !!props.onDrag;
+        }
+    },
+    (connect, monitor) => ({
+        dragSource: connect.dragSource(),
+        isDragging: monitor.isDragging()
+    })
+)
+export default class extends React.Component {
+
+    static propTypes = {
+        user: React.PropTypes.object.isRequired,
+        onClick: React.PropTypes.func.isRequired,
+        onDrag: React.PropTypes.func.isRequired
+    }
+
+    render() {
+        const { user, className, onClick, dragSource, dropTarget } = this.props;
+        const compClass = classNames('user-icon', className);
+
+        return dropTarget(dragSource(
+            <div className={compClass} onClick={onClick}>
+                <FallbackImage className="image" src={user.data.images.large} alt={user.data.name}>
+                    <div className="user-icon-fallback">
+                        {user.data.name}
+                    </div>
+                </FallbackImage>
+            </div>
+        ));
+    }
 }

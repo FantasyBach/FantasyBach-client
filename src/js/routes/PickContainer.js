@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import { PICK_CONTESTANT, UNPICK_CONTESTANT } from '../actions';
 import { middleware, RESOLVED, PENDING, REJECTED } from '../util/middleware-decorator';
 import UserIcon from '../components/UserIcon';
+import Slot from '../components/Slot';
 
 @connect(state => state)
 @middleware([])
@@ -22,25 +23,20 @@ export default class extends React.Component {
 
     @autobind
     clearDeck() {
-        // if (this.state.onDeck) this.setState({ onDeck: null });
+        if (this.state.onDeck) this.setState({ onDeck: null });
     }
 
     @autobind
-    onDeck(id) {
-        this.setState({ onDeck: id })
+    onDeck(user) {
+        this.setState({ onDeck: user.data.id })
     }
 
     @autobind
-    popDeck(roleId) {
+    popDeck(role) {
         if (this.state.onDeck) {
-            this.pickContestant(roleId, this.state.onDeck);
+            this.pickContestant(role.data.id, this.state.onDeck);
             this.clearDeck();
         }
-    }
-
-    ignore(evt) {
-        evt.preventDefault();
-        evt.stopPropagation();
     }
 
     @autobind
@@ -50,9 +46,9 @@ export default class extends React.Component {
     }
 
     @autobind
-    unpickContestant(roleId) {
+    unpickContestant(role) {
         const roundId = this.props.session.round;
-        this.props.dispatch(UNPICK_CONTESTANT(roundId, roleId));
+        this.props.dispatch(UNPICK_CONTESTANT(roundId, role.data.id));
     }
 
     render() {
@@ -74,26 +70,30 @@ export default class extends React.Component {
 
 
         return (
-            <div onDragEnd={this.clearDeck} onMouseUp={this.clearDeck}>
-                <section className="pick-container">
+            <div onClick={this.clearDeck}>
+                <section className={this.state.onDeck ? 'onDeck pick-container' : 'pick-container'}>
 
                     <div className="picks">
                         <div className="bachelor">
-                            <UserIcon src={season.data.icon} name={season.data.name} />
                             <label>fName lName</label>
                         </div>
                         {roles.map(role => {
                             const pick = picks[role.data.id];
+                            const user = pick ? this.props.contestants[pick.contestantId] : null;
 
-                            return pick ? (
-                                <div className="slot" onClick={e => this.unpickContestant(role.data.id)} onDragEnd={e => this.popDeck(role.data.id)} onMouseUp={e => this.popDeck(role.data.id)}>
-                                    <UserIcon src={this.props.contestants[pick.contestantId].data.images.large} name={role.data.name} />
-                                </div>
-                            ) : (
-                                <div className="slot" onDragEnd={e => this.popDeck(role.data.id)} onMouseUp={e => this.popDeck(role.data.id)}>
-                                    <UserIcon src="" name={role.data.name} />
-                                </div>
-                            );
+                            return pick ?
+                                <UserIcon
+                                    user={user}
+                                    role={role}
+                                    onClick={this.unpickContestant}
+                                    onClick={e => this.unpickContestant(role)}
+                                    onDrop={e => this.popDeck(role)}
+                                /> :
+                                <Slot
+                                    role={role}
+                                    onClick={e => this.popDeck(role)}
+                                    onDrop={e => this.popDeck(role)}
+                                /> ;
                         })}
                     </div>
 
@@ -101,13 +101,15 @@ export default class extends React.Component {
                         {available.map(cont => {
                             const compClass = classNames({
                                 option: true,
-                                selected: !!find(picks, { contestantId: cont.data.id })
+                                selected: !!find(picks, { contestantId: cont.data.id }),
+                                onDeck: this.state.onDeck === cont.data.id
                             })
-                            return (
-                                <div className={compClass} onDragStart={e => this.onDeck(cont.data.id)} onMouseDown={e => this.onDeck(cont.data.id)}>
-                                    <UserIcon src={cont.data.images.large} name={cont.data.name} />
-                                </div>
-                            );
+                            return <UserIcon
+                                user={cont}
+                                className={compClass}
+                                onClick={e => this.onDeck(cont)}
+                                onDrag={e => this.onDeck(cont)}
+                            />
                         })}
                     </div>
                 </section>
