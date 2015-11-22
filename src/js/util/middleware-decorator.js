@@ -130,43 +130,47 @@ export function middleware(deps) {
                     ctx.unshift(props);
 
                     // try the handler - accepts promises for async stuff
-                    Promise.try(dep.handle.bind(null, ...ctx)).then(
+                    Promise.try(() => dep.handle.apply(null, ctx)).then(
 
                         // handle success
                         ( value ) => {
-                            if (!this.mounted) return;
-                            if (dep.inject) this.values[i] = value;
-                            this.setState({
-                                error: null,
-                                [dep.key]: RESOLVED
-                            }, () => this.handleChange(this.props));
+                            if (this.mounted) {
+                                if (dep.inject) this.values[i] = value;
+                                this.setState({
+                                    error: null,
+                                    [dep.key]: RESOLVED
+                                }, () => this.handleChange(this.props));
+                            }
+                            return null;
                         },
 
                         // handle error
                         ( error ) => {
-                            if (!this.mounted) return;
-                            console.warn(error); // for debugging TODO remove in prod
+                            if (this.mounted) {
+                                console.warn(error); // for debugging TODO remove in prod
 
-                            // if optional, mark key as failed and continue
-                            if (dep.optional) {
-                                this.setState({
-                                    [dep.key]: REJECTED
-                                }, () => this.handleChange(this.props));
-                            } else {
-                                // otherwise... giveup and notify children
-                                this.setState(
-                                    {
-                                        loading: false,
-                                        error: error,
-                                        ...spread(deps, i, REJECTED)
-                                    },
-                                    () => {
-                                        if (!this.pending) return;
-                                        this.pending = false;
-                                        this.children.forEach(child => child.handleChange(child.props));
-                                    }
-                                );
+                                // if optional, mark key as failed and continue
+                                if (dep.optional) {
+                                    this.setState({
+                                        [dep.key]: REJECTED
+                                    }, () => this.handleChange(this.props));
+                                } else {
+                                    // otherwise... giveup and notify children
+                                    this.setState(
+                                        {
+                                            loading: false,
+                                            error: error,
+                                            ...spread(deps, i, REJECTED)
+                                        },
+                                        () => {
+                                            if (!this.pending) return;
+                                            this.pending = false;
+                                            this.children.forEach(child => child.handleChange(child.props));
+                                        }
+                                    );
+                                }
                             }
+                            return null;
                         }
                     );
 
