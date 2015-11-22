@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import { PICK_CONTESTANT, UNPICK_CONTESTANT } from '../actions';
 import { middleware, RESOLVED, PENDING, REJECTED } from '../util/middleware-decorator';
 import UserIcon from '../components/UserIcon';
+import UserBio from '../components/UserBio';
 import Slot from '../components/Slot';
 
 @connect(state => state)
@@ -104,12 +105,19 @@ export default class extends React.Component {
                                 selected: !!find(picks, { contestantId: cont.data.id }),
                                 onDeck: this.state.onDeck === cont.data.id
                             })
-                            return <UserIcon
-                                user={cont}
-                                className={compClass}
-                                onClick={e => this.onDeck(cont)}
-                                onDrag={e => this.onDeck(cont)}
-                            />
+                            return (
+                                <UserBio>
+                                    <UserIcon
+                                        user={cont}
+                                        className={compClass}
+                                        onClick={e => this.onDeck(cont)}
+                                        onDrag={e => this.onDeck(cont)}
+                                    />
+                                    <label>
+                                        {cont.data.name}
+                                    </label>
+                                </UserBio>
+                            )
                         })}
                     </div>
                 </section>
