@@ -19,7 +19,7 @@ var Facebook = new function() {
             appId: APP_ID,
             cookie: true,
             xfbml: false,
-            version: 'v2.2' // use version 2.2
+            version: 'v2.2'
         });
 
         me.login().then(function response(response) {
@@ -58,13 +58,6 @@ var Facebook = new function() {
         });
     }
 
-    /**
-	 Pass options = {
-		name: 'desc',
-		description: 'desc',
-		privacy: 'closed'/'open'
-	 }
-    */
     this.createGroup = function(resolve, reject) {
     	return new Promise(function(resolve, reject) {
 	    	FB.ui({
