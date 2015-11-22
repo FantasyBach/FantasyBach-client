@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
 import find from 'lodash/collection/find';
+import reduce from 'lodash/collection/reduce';
 import classNames from 'classnames';
 
 import { PICK_CONTESTANT, UNPICK_CONTESTANT } from '../actions';
@@ -9,6 +10,7 @@ import { middleware, RESOLVED, PENDING, REJECTED } from '../util/middleware-deco
 import UserIcon from '../components/UserIcon';
 import UserBio from '../components/UserBio';
 import Slot from '../components/Slot';
+import Collapser from '../components/Collapser';
 
 @connect(state => state)
 @middleware([])
@@ -18,8 +20,14 @@ export default class extends React.Component {
         super(props, ctx);
 
         this.state = {
-            onDeck: null
+            onDeck: null,
+            optionsOpen: null
         };
+    }
+
+    @autobind
+    toggleOptions() {
+        this.setState({ optionsOpen: !this.state.optionsOpen });
     }
 
     @autobind
@@ -60,6 +68,9 @@ export default class extends React.Component {
         const round = this.props.rounds[roundId];
 
         const picks = user.picks[roundId];
+        const left = round.data.rosterSize - reduce(picks, (count, data) => {
+            return count + (data && data.contestantId ? 1 : 0);
+        }, 0);
 
         const roles = round.data.availableRoleIds.map(id => {
             return this.props.roles[id];
@@ -69,6 +80,9 @@ export default class extends React.Component {
             return this.props.contestants[id];
         });
 
+        const collapsed = typeof this.state.optionsOpen === "boolean" ?
+            this.state.optionsOpen :
+            !left;
 
         return (
             <div onClick={this.clearDeck}>
@@ -97,8 +111,12 @@ export default class extends React.Component {
                                 /> ;
                         })}
                     </div>
-
-                    <div className="options">
+                    <hr />
+                    {collapsed ?
+                        <span className="fa fa-chevron-down" onClick={this.toggleOptions} /> :
+                        <span className="fa fa-chevron-up" onClick={this.toggleOptions} />
+                    }
+                    <Collapser className="options" collapsed={collapsed}>
                         {available.map(cont => {
                             const compClass = classNames({
                                 option: true,
@@ -117,9 +135,9 @@ export default class extends React.Component {
                                         {cont.data.name}
                                     </label>
                                 </UserBio>
-                            )
+                            );
                         })}
-                    </div>
+                    </Collapser>
                 </section>
                 {this.props.children}
             </div>

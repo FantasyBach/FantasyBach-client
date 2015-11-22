@@ -8,7 +8,6 @@
         min-width: -webkit-min-content;
         margin: 20px auto;
 
-
         .bachelor {
             padding: 0 10px;
             margin-right: 10px;
@@ -36,10 +35,13 @@
     }
 
     .options {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
         margin-top: 20px;
+
+        > div { // because collapser
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
 
         .user-icon {
             cursor: pointer;
@@ -66,6 +68,25 @@
             display: block;
             font-size: 1.6rem;
         }
+    }
+
+    > .fa {
+        width: 40px;
+        height: 40px;
+        text-align: center;
+        line-height: 40px;
+        background-color: rgb(245, 245, 245);
+        border-radius: 50%;
+        margin: -20px auto;
+        color: black;
+        font-size: 2rem;
+        display: block;
+        cursor: pointer;
+    }
+
+    > hr {
+        border-color: white;
+        margin: 10px 0;
     }
 }
 
