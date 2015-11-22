@@ -59,7 +59,7 @@ var Facebook = new function() {
     this.getMembers = function(leagueId) {
     	// TODO paging
         return new Promise(function(resolve, reject) {
-            FB.api(me.formatGetMembers(leagueId), function (response) {
+            FB.api(formatGetMembers(leagueId), function (response) {
 				if (response && !response.error) {
 					resolve(response.data);
 				} else {
@@ -116,7 +116,7 @@ var Facebook = new function() {
     	});
     }
 
-    this.formatGetMembers = function(id) {
+    var formatGetMembers = function(id) {
     	return '/' + id + '/members';
     }
 }
