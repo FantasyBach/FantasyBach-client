@@ -1,9 +1,17 @@
-
-var Facebook = function() {
+var Facebook = new function() {
     this.app_id = '307416292730318';
-    this.accessToken;
 
     var me = this;
+
+    // Load the SDK asynchronously
+	(function(d, s, id) {
+	    var js, fjs = d.getElementsByTagName(s)[0];
+	    if (d.getElementById(id)) return;
+	    js = d.createElement(s); js.id = id;
+	    js.src = "//connect.facebook.net/en_US/sdk.js";
+	    fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
+
 
     window.fbAsyncInit = function() {
         FB.init({
@@ -16,8 +24,8 @@ var Facebook = function() {
         me.login().then(function response(token) {
         	console.log(token);
         }, function error() {
+
         });
-        console.log('loaded');
     }
 
     this.getLeagues = function() {
@@ -59,23 +67,15 @@ var Facebook = function() {
         // for FB.getLoginStatus().
         if (response.status === 'connected') {
             // Logged into your app and Facebook.
-            console.log('token', resonse.authResponse.accessToken);
-            resolve(resonse.authResponse.accessToken);
+            me.accessToken = response.authResponse.accessToken;
+            resolve(me.accessToken);
         } else if (response.status === 'not_authorized') {
             // The person is logged into Facebook, but not your app.
-            reject('need to log in');
-            document.getElementById('status').innerHTML = 'Please log ' +
-                'into this app.';
+            reject('need to log in to this app');
         } else {
+        	reject('need to log in to facebook');
             // The person is not logged into Facebook, so we're not sure if
-            // they are logged into this app or not.
-            document.getElementById('status').innerHTML = 'Please log ' +
-                'into Facebook.';
-        }
-        if (false) {
-            resolve("it worked!");
-        } else {
-            reject(":(");
         }
     }
 }
+module.exports = Facebook;
