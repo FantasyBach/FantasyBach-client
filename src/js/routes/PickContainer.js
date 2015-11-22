@@ -11,6 +11,7 @@ import UserIcon from '../components/UserIcon';
 import UserBio from '../components/UserBio';
 import Slot from '../components/Slot';
 import Collapser from '../components/Collapser';
+import OptionsMenu from '../components/OptionsMenu';
 
 @connect(state => state)
 @middleware([])
@@ -138,6 +139,14 @@ export default class extends React.Component {
                             );
                         })}
                     </Collapser>
+                </section>
+                <section>
+                    <div>
+
+                    </div>
+                    <OptionsMenu groups={[]}>
+                        Global
+                    </OptionsMenu>
                 </section>
                 {this.props.children}
             </div>

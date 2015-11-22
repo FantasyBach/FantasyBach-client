@@ -175,6 +175,13 @@ export const UNPICK_CONTESTANT = createAction('UNPICK_CONTESTANT', (roundId, rol
     return Promise.resolve(null);
 }, meta);
 
+export const CHANGE_ROUND = createAction('CHANGE_ROUND', id => {
+
+}, meta);
+
+export const CHANGE_LEAGUE = createAction('CHANGE_LEAGUE', id => {
+
+}, meta);
 
 function meta(...args) {
     return args;

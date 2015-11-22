@@ -3,7 +3,15 @@ import { connect } from 'react-redux';
 import { Route, IndexRoute } from 'react-router';
 import Promise from 'bluebird';
 
-import { FACEBOOK_LOGIN, LOAD_SEASONS, LOAD_CONTESTANTS, LOAD_USER, LOAD_ROUNDS, LOAD_ROLES } from './actions';
+import {
+    FACEBOOK_LOGIN,
+    LOAD_SEASONS,
+    LOAD_CONTESTANTS,
+    LOAD_USER,
+    LOAD_ROUNDS,
+    LOAD_ROLES,
+    CHANGE_ROUND
+} from './actions';
 import { middleware, RESOLVED } from './util/middleware-decorator';
 import OptionsMenu from './components/OptionsMenu';
 
@@ -54,7 +62,7 @@ class App extends React.Component {
                 .filter(round => true)
                 .map(round => ({
                     label: `Week ${round.data.index}`,
-                    onClick: () => null,
+                    onClick: () => this.props.dispatch(CHANGE_ROUND(round.data.id)),
                     selected: round.data.id === roundId
                 }));
         }
