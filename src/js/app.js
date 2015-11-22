@@ -35,11 +35,11 @@ class App extends React.Component {
 
     render() {
         return (
-            <main>
+            <main className="app">
                 <header>
                     <h1>Fantasy Bachelor</h1>
                 </header>
-                {this.props.children}
+                {this.props.loading ? null : this.props.children}
                 <footer>
 
                 </footer>

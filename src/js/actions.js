@@ -4,7 +4,8 @@ import Promise from 'bluebird';
 export const LOAD_SEASONS = createAction('LOAD_SEASONS', () => {
     return Promise.resolve([
         {
-            id: 1
+            id: 1,
+            icon: 'https://robohash.org/bachelor.jpg?bgset=bg2'
         }
     ]);
 });
@@ -18,21 +19,25 @@ export const LOAD_USER = createAction('LOAD_USER', seasonId => {
         score: 10,
         leagueIds: [1],
         picks: {
-            1: [
-                {
+            1: {
+                1: {
                     contestantId: 1,
-                    roleId: 1,
                     score: 1,
                     multiplier: 1
                 },
-                {
+                2: {
                     contestantId: 2,
-                    roleId: 2,
                     score: 1,
                     multiplier: 1
                 }
-            ],
-            2: []
+            },
+            2: {
+                4: {
+                    contestantId: 2,
+                    score: null,
+                    multiplier: null
+                }
+            }
         }
     });
 });
@@ -95,7 +100,7 @@ export const LOAD_ROUNDS = createAction('LOAD_ROUNDS', seasonId => {
             startVoteLocalDateTime: "",
             endVoteLocalDateTime: "",
             roundEndLocalDateTime: "",
-            availableRoleIds: [1,2]
+            availableRoleIds: [1,2,3,4,5,6]
         },
         {
             id: 2,
@@ -105,7 +110,7 @@ export const LOAD_ROUNDS = createAction('LOAD_ROUNDS', seasonId => {
             startVoteLocalDateTime: "",
             endVoteLocalDateTime: "",
             roundEndLocalDateTime: "",
-            availableRoleIds: [1,2]
+            availableRoleIds: [1,2,3,4,5,6]
         }
     ]);
 });
@@ -123,6 +128,43 @@ export const LOAD_ROLES = createAction('LOAD_ROLES', seasonId => {
             name: "Lover",
             verbName: "'Love's",
             description: "<3 points every time they say the word 'love'."
+        },
+        {
+            id: 3,
+            name: "Stealer",
+            verbName: "'Love's",
+            description: "<3 points every time they say the word 'love'."
+        },
+        {
+            id: 4,
+            name: "Interviewer",
+            verbName: "'Love's",
+            description: "<3 points every time they say the word 'love'."
+        },
+        {
+            id: 5,
+            name: "Cryer",
+            verbName: "'Love's",
+            description: "<3 points every time they say the word 'love'."
+        },
+        {
+            id: 6,
+            name: "Kisser",
+            verbName: "'Love's",
+            description: "<3 points every time they say the word 'love'."
         }
     ]);
 });
+
+export const PICK_CONTESTANT = createAction('PICK_CONTESTANT', (roundId, roleId, contestantId) => {
+    return Promise.resolve(null);
+}, meta);
+
+export const UNPICK_CONTESTANT = createAction('UNPICK_CONTESTANT', (roundId, roleId) => {
+    return Promise.resolve(null);
+}, meta);
+
+
+function meta(...args) {
+    return args;
+}
