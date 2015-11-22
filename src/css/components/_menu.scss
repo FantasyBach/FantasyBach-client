@@ -17,14 +17,14 @@
         padding: 15px;
 
         position: absolute;
-        top: 100%;
+        top: calc(100% + 7px);
         left: 20px;
         z-index: 2;
     }
 
     .menu-arrow {
         position: absolute;
-        top: calc(100% - 7px);
+        top: 100%;
         left: 50%;
         height: 15px;
         width: 15px;
@@ -32,5 +32,44 @@
         background-color: white;
         box-shadow: 0px 0px 2px rgba(0,0,0,.2);
         z-index: 1;
+    }
+
+    &.options-menu {
+
+        .menu-container {
+            min-width: 160px;
+            min-height: auto;
+            width: 160px;
+            height: auto;
+            padding: 0;
+            background-color: white;
+            max-height: 400px;
+        }
+
+        .group {
+            border-bottom: solid 1px rgb(200, 200, 200);
+        }
+
+        .option {
+            display: block;
+            padding: 10px 20px;
+            font-size: 1.6rem;
+            color: rgb(75,75,75);
+        }
+
+        a.option {
+            transition: background-color .2s ease;
+            background-color: white;
+            cursor: pointer;
+            transition: padding-left .2s ease;
+
+            &:hover { background-color: rgb(250, 250, 250); }
+            &:active { background-color: rgb(245, 245, 245); }
+            &.selected {
+                padding-left: 25px;
+                background-color: rgb(245, 245, 245);
+                cursor: default;
+            }
+        }
     }
 }

@@ -4,7 +4,8 @@ import { Route, IndexRoute } from 'react-router';
 import Promise from 'bluebird';
 
 import { FACEBOOK_LOGIN, LOAD_SEASONS, LOAD_CONTESTANTS, LOAD_USER, LOAD_ROUNDS, LOAD_ROLES } from './actions';
-import { middleware } from './util/middleware-decorator';
+import { middleware, RESOLVED } from './util/middleware-decorator';
+import OptionsMenu from './components/OptionsMenu';
 
 // Routes
 import Login from './routes/Login';
@@ -37,10 +38,44 @@ import PickContainer from './routes/PickContainer';
 class App extends React.Component {
 
     render() {
+        let weekOptions = [];
+        let round = null;
+
+        if (this.props.$deps === RESOLVED) {
+            const seasonId = this.props.session.season;
+            const season = this.props.seasons[seasonId];
+            const roundId = this.props.session.round;
+            const rounds = season.data.roundIds.map(id => {
+                return this.props.rounds[id];
+            });
+
+            round = this.props.rounds[roundId];
+            weekOptions = rounds
+                .filter(round => true)
+                .map(round => ({
+                    label: `Week ${round.data.index}`,
+                    onClick: () => null,
+                    selected: round.data.id === roundId
+                }));
+        }
+
+        const menuOptions = [
+            weekOptions,
+            [
+                {
+                    label: "Logout",
+                    onClick: () => null
+                }
+            ]
+        ]
+
         return (
             <main className="app">
                 <header>
                     <h1>Fantasy Bachelor</h1>
+                    <OptionsMenu groups={menuOptions}>
+                        <h3>{round ? `Week ${round.data.index}` : ''}</h3>
+                    </OptionsMenu>
                 </header>
                 {this.props.loading ? null : this.props.children}
                 <footer>

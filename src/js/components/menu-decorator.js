@@ -3,6 +3,8 @@ import hoist from 'hoist-non-react-statics';
 import autobind from 'autobind-decorator';
 import classNames from 'classnames';
 import noop from 'lodash/utility/noop';
+import { decorate as mixin } from 'react-mixin';
+import ClickOutsideMixin from 'react-onclickoutside';
 
 import getDisplayName from '../util/getDisplayName';
 
@@ -10,50 +12,12 @@ const DEFAULT_LEFT = 5;
 
 /**
  * A Higher Order component to render a dropdown menu
- *
- ***
-
-import React from 'react';
-import menu from 'path/to/menu-decorator';
-
-@menu(className)
-class MyMenu extends React.Component {
-
-    render() {
-        const closeMenu = this.props.close;
-        const openMenu = this.props.open;
-
-        return (
-            <div>
-                Stuff
-            </div>
-        );
-    }
-}
-
-export default class extends React.Component {
-
-    render() {
-        // leave this undefined and menu will open/close automatically
-        // otherwise you'll have to manually change the open property
-        // by listening to onClose and onOpen ( you probably never
-        // need to use this property )
-        const open = true;
-
-        return (
-            <MyMenu disabled={false} onOpen={noop} onClose={noop} open={open}>
-                <a>Click me to open the menu!!</a>
-            </MyMenu>
-        );
-    }
-}
-
- ***
  */
 export default function(className) {
 
     return function(Component) {
 
+        @mixin(ClickOutsideMixin)
         class WrappedComponent extends React.Component {
 
             static displayName = `Menu(${getDisplayName(Component)})`
@@ -78,8 +42,7 @@ export default function(className) {
                 super(props, ctx);
 
                 this.state = {
-                    open: false,
-                    timeout: null
+                    open: false
                 }
             }
 
@@ -91,19 +54,9 @@ export default function(className) {
                 window.document.removeEventListener('keydown', this.handleKeyPress);
             }
 
-            // make sure it's in the screen when it opens
-            componentDidUpdate() {
-                if (!this.refs.container) return;
-                const node = this.refs.container;
-
-                const bounds = node.getBoundingClientRect();
-                const width = document.body.clientWidth;
-                const currentOffset = parseFloat(node.style.left || 0);
-
-                const diff = bounds.left + bounds.width - currentOffset - width;
-                if (diff > -10) {
-                    node.style.left = -diff + 'px';
-                }
+            @autobind
+            handleClickOutside() {
+                this.close();
             }
 
             @autobind
@@ -118,9 +71,8 @@ export default function(className) {
             @autobind
             open() {
                 if (this.props.disabled) return;
-                if (this.state.timeout) clearTimeout(this.state.timeout);
                 this.setState(
-                    { open: true, timeout: null },
+                    { open: true },
                     () => this.props.onOpen
                 );
             }
@@ -128,9 +80,8 @@ export default function(className) {
             @autobind
             close() {
                 if (this.props.disabled) return;
-                if (this.state.timeout) clearTimeout(this.state.timeout);
                 this.setState(
-                    { open: false, timeout: null },
+                    { open: false },
                     () => this.props.onClose
                 );
             }
@@ -141,31 +92,18 @@ export default function(className) {
                 this[isOpen ? 'close' : 'open']();
             }
 
-            @autobind
-            mouseEnter() {
-                if (this.props.disabled) return;
-                if (this.state.open && this.state.timeout) {
-                    clearTimeout(this.state.timeout);
-                    this.setState({ timeout: null });
-                }
+            // make sure it's in the screen when it opens
+            componentDidUpdate() {
+                if (!this.refs.container) return;
+                const node = this.refs.container;
 
-                else if (!this.state.open) {
-                    const timeout = setTimeout(() => this.open(), 400);
-                    this.setState({ timeout });
-                }
-            }
+                const bounds = node.getBoundingClientRect();
+                const width = document.body.clientWidth;
+                const currentOffset = parseFloat(node.style.left || 0);
 
-            @autobind
-            mouseLeave() {
-                if (this.props.disabled) return;
-                if (!this.state.open && this.state.timeout) {
-                    clearTimeout(this.state.timeout);
-                    this.setState({ timeout: null });
-                }
-
-                else if (this.state.open) {
-                    const timeout = setTimeout(() => this.close(), 400);
-                    this.setState({ timeout });
+                const diff = bounds.left + bounds.width - currentOffset - width;
+                if (diff > -10) {
+                    node.style.left = -diff + 'px';
                 }
             }
 
@@ -199,7 +137,7 @@ export default function(className) {
                 ];
 
                 return (
-                    <div className={compClass} onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
+                    <div className={compClass}>
                         <span className={childClass} onClick={this.toggle}>
                             {children}
                         </span>

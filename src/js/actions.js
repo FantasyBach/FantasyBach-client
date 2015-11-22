@@ -15,7 +15,8 @@ export const LOAD_SEASONS = createAction('LOAD_SEASONS', () => {
     return Promise.resolve([
         {
             id: 1,
-            icon: 'https://robohash.org/bachelor.jpg?bgset=bg2'
+            icon: 'https://robohash.org/bachelor.jpg?bgset=bg2',
+            roundIds: [1,2]
         }
     ]);
 });
@@ -104,7 +105,7 @@ export const LOAD_ROUNDS = createAction('LOAD_ROUNDS', seasonId => {
     return Promise.resolve([
         {
             id: 1,
-            index: 0,
+            index: 1,
             eligibleContestantIds: [1,2],
             rosterSize: 2,
             startVoteLocalDateTime: "",
@@ -114,7 +115,7 @@ export const LOAD_ROUNDS = createAction('LOAD_ROUNDS', seasonId => {
         },
         {
             id: 2,
-            index: 1,
+            index: 2,
             eligibleContestantIds: [1,2],
             rosterSize: 2,
             startVoteLocalDateTime: "",
