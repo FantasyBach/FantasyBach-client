@@ -1,7 +1,7 @@
 var Facebook = new function() {
     var APP_ID = '307416292730318';
     var PREFIX = '/' + APP_ID + '/';
-    var CREATE_GROUP = PREFIX + 'groups';
+    var GROUP = PREFIX + 'groups';
 
     var me = this;
 
@@ -25,19 +25,28 @@ var Facebook = new function() {
         me.login().then(function response(response) {
         	console.log(response.accessToken);
         	me.userId = response.userID;
-    		me.createGroup().then(function(response) {
-    			console.log("all leagues: ", response);
+    		me.getLeagues().then(function(data) {
+    			console.log("leagues data", data);
+    			for (var i =0; i < data.length; i++) {
+    				me.getMembers(data[i].id).then(function(d) {
+    					console.log("Got group info ", d);
+    				}, function(error) {
+    					console.log("error", error);
+    				});
+    			}
         	}, function() {
-
+        		console.log("error ", data);
         	});
         }, function() {
-
+        	console.log("error", response);
         });
     }
 
     this.getLeagues = function() {
         return new Promise(function(resolve, reject) {
-            FB.api(CREATE_GROUP, function(response) {
+            FB.api(GROUP, 'GET', {
+            	auth_token: me.accessToken
+            }, function(response) {
 				if (response.error) {
 					reject(response.error);
 				} else {
@@ -48,17 +57,19 @@ var Facebook = new function() {
     }
 
     this.getMembers = function(leagueId) {
+    	// TODO paging
         return new Promise(function(resolve, reject) {
-            // TODO
-            if (false) {
-                resolve("it worked!");
-            } else {
-                reject(":(");
-            }
+            FB.api(me.formatGetMembers(leagueId), function (response) {
+				if (response && !response.error) {
+					resolve(response.data);
+				} else {
+					reject(response);
+				}
+		    });
         });
     }
 
-    this.createGroup = function(resolve, reject) {
+    this.createGroup = function() {
     	return new Promise(function(resolve, reject) {
 	    	FB.ui({
 			  method: 'game_group_create',
@@ -68,10 +79,8 @@ var Facebook = new function() {
 			},
 			 function(response) {
 			    if (response && response.id) {
-			        alert("Group was created with id " + response.id);
 			        resolve(response.id);
 			    } else {
-			        alert('There was an error creating your group.');
 			        reject(response);
 			    }
 			 }
@@ -82,14 +91,15 @@ var Facebook = new function() {
     this.login = function() {
         return new Promise(function(resolve, reject) {
             FB.getLoginStatus(function(response) {
-            	if (response.status === 'connected') {
-					resolve(response);
-				} else if (response.status === 'not_authorized') {
+            	console.log("loging", response);
+            	if (response && response.status === 'connected') {
+            		this.accessToken = response.authResponse.accessToken;
+					resolve(response.authResponse);
+				} else if (response && response.status === 'not_authorized') {
 					reject('need to log in to this app');
 				} else {
 					reject('need to log in to facebook');
 				}
-                me.loginCallback(response, resolve, reject);
             });
         });
     }
@@ -97,13 +107,17 @@ var Facebook = new function() {
     this.logout = function() {
     	return new Promise(function(resolve, reject) {
     		FB.logout(function(response) {
-    			if (response.error) {
-    				reject(response);
-    			} else {
+    			if (response && !response.error) {
     				resolve(response);
+    			} else {
+    				reject(response);
     			}
 		    });
     	});
+    }
+
+    this.formatGetMembers = function(id) {
+    	return '/' + id + '/members';
     }
 }
 module.exports = Facebook;
