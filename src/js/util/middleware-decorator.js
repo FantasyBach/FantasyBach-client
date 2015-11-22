@@ -130,7 +130,7 @@ export function middleware(deps) {
                     ctx.unshift(props);
 
                     // try the handler - accepts promises for async stuff
-                    Promise.try(dep.handle, ctx).then(
+                    Promise.try(dep.handle.bind(null, ...ctx)).then(
 
                         // handle success
                         ( value ) => {

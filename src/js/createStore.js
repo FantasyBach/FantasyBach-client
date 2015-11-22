@@ -1,9 +1,16 @@
 import {createStore, applyMiddleware, combineReducers} from 'redux';
 
-import test from './reducers/test';
+import contestants from './reducers/contestants';
+import rounds from './reducers/rounds';
+import seasons from './reducers/seasons';
+import session from './reducers/session';
+
 
 const reducer = combineReducers({
-    test
+    contestants,
+    rounds,
+    seasons,
+    session
 });
 
 const middleware = applyMiddleware(

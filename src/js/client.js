@@ -13,6 +13,8 @@ const Context = DragDropContext(backend)(Provider);
 const store = createStore();
 const history = createBrowserHistory();
 
+window.store = store;
+
 const dom = (
     <Context store={store}>
         <Router history={history}>

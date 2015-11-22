@@ -3,68 +3,38 @@ import Promise from 'bluebird';
 
 export const LOAD_SEASONS = createAction('LOAD_SEASONS', () => {
     return Promise.resolve([
-
+        {
+            id: 1
+        }
     ]);
 });
 
 export const LOAD_USER = createAction('LOAD_USER', seasonId => {
-    return Promise.resolve([
-        {
-            id: 1,
-            name: "User",
-            nickname: "The Example User - dun dun dunnnnn",
-            profilePic: "url.png",
-            score: 10,
-            leagueIds: [1],
-            picks: {
-                1: [
-                    {
-                        contestantId: 1,
-                        roleId: 1,
-                        score: 1,
-                        multiplier: 1
-                    },
-                    {
-                        contestantId: 2,
-                        roleId: 2,
-                        score: 1,
-                        multiplier: 1
-                    }
-                ],
-                2: []
-            }
+    return Promise.resolve({
+        id: 1,
+        name: "User",
+        nickname: "The Example User - dun dun dunnnnn",
+        profilePic: 'https://robohash.org/user.jpg?bgset=bg2',
+        score: 10,
+        leagueIds: [1],
+        picks: {
+            1: [
+                {
+                    contestantId: 1,
+                    roleId: 1,
+                    score: 1,
+                    multiplier: 1
+                },
+                {
+                    contestantId: 2,
+                    roleId: 2,
+                    score: 1,
+                    multiplier: 1
+                }
+            ],
+            2: []
         }
-    ]);
-});
-
-export const LOGIN = createAction('LOGIN', () => {
-    return Promise.resolve([
-        {
-            id: 1,
-            name: "User",
-            nickname: "The Example User - dun dun dunnnnn",
-            profilePic: "url.png",
-            score: 10,
-            leagueIds: [1],
-            picks: {
-                1: [
-                    {
-                        contestantId: 1,
-                        roleId: 1,
-                        score: 1,
-                        multiplier: 1
-                    },
-                    {
-                        contestantId: 2,
-                        roleId: 2,
-                        score: 1,
-                        multiplier: 1
-                    }
-                ],
-                2: []
-            }
-        }
-    ]);
+    });
 });
 
 export const LOAD_CONTESTANTS = createAction('LOAD_CONTESTANTS', seasonId => {
@@ -73,7 +43,7 @@ export const LOAD_CONTESTANTS = createAction('LOAD_CONTESTANTS', seasonId => {
             id: 1,
             name: "Tore",
             images: {
-                large: 'url.png'
+                large: 'https://robohash.org/tore.jpg?bgset=bg2'
             },
             bioStats: [
                 { name: "", value: "" },
@@ -95,7 +65,7 @@ export const LOAD_CONTESTANTS = createAction('LOAD_CONTESTANTS', seasonId => {
             id: 2,
             name: "Mitch",
             images: {
-                large: 'url.png'
+                large: 'https://robohash.org/mitch.jpg?bgset=bg2'
             },
             bioStats: [
                 { name: "", value: "" },

@@ -2,15 +2,16 @@ import update from 'react-addons-update';
 import { handleActions } from 'redux-actions';
 
 const initialState = {
-    user: null,
-    seasons: []
+    user: null
 };
 
 export default handleActions({
 
-    LOGIN: {
+    LOAD_USER: {
         next(state, action) {
-            return state;
+            return update(state, {
+                user: { $set: action.payload }
+            });
         }
     }
 

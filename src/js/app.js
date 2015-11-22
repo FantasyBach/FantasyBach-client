@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Route, IndexRoute } from 'react-router';
 import Promise from 'bluebird';
 
+import { LOAD_SEASONS, LOAD_CONTESTANTS, LOAD_USER, LOAD_ROUNDS, LOAD_ROLES } from './actions';
 import { middleware } from './util/middleware-decorator';
 
 // Routes
@@ -46,7 +47,7 @@ class App extends React.Component {
 }
 
 export default (
-    <Route>
+    <Route component={App}>
         <Route component={PickContainer}>
             <Route path="/" component={ViewLeague} />
             <Route path="/league/:league" component={ViewLeague} />
