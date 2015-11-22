@@ -9,6 +9,7 @@ import { PICK_CONTESTANT, UNPICK_CONTESTANT } from '../actions';
 import { middleware, RESOLVED, PENDING, REJECTED } from '../util/middleware-decorator';
 import UserIcon from '../components/UserIcon';
 import UserBio from '../components/UserBio';
+import RoleBio from '../components/RoleBio';
 import Slot from '../components/Slot';
 import Collapser from '../components/Collapser';
 import OptionsMenu from '../components/OptionsMenu';
@@ -97,7 +98,7 @@ export default class extends React.Component {
                             const pick = picks[role.data.id];
                             const user = pick ? this.props.contestants[pick.contestantId] : null;
 
-                            return pick ?
+                            const content = pick ?
                                 <UserIcon
                                     user={user}
                                     role={role}
@@ -110,6 +111,13 @@ export default class extends React.Component {
                                     onClick={e => this.popDeck(role)}
                                     onDrop={e => this.popDeck(role)}
                                 /> ;
+
+                            return (
+                                <RoleBio role={role}>
+                                    {content}
+                                    <label>{role.data.name}</label>
+                                </RoleBio>
+                            );
                         })}
                     </div>
                     <hr />

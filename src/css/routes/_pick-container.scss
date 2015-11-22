@@ -16,7 +16,7 @@
 
         .slot, .user-icon {
             cursor: pointer;
-            margin-right: 10px;
+            margin: 0px 10px;
             width: 100px;
             height: 100px;
             border-radius: 50%;
@@ -24,6 +24,12 @@
 
         .slot {
             background-color: rgb(200, 200, 200);
+        }
+
+        label {
+            display: block;
+            text-align: center;
+            font-size: 1.8rem;
         }
     }
 

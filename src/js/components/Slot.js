@@ -32,7 +32,7 @@ export default class extends React.Component {
 
         return dropTarget(
             <div className={compClass} onClick={onClick}>
-                Test
+                
             </div>
         );
     }
