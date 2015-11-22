@@ -1,5 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
+import Facebook from '../facebook';
 
 import FallbackImage from './FallbackImage';
 

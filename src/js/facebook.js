@@ -1,3 +1,5 @@
+import Promise from 'bluebird';
+
 var Facebook = new function() {
     var APP_ID = '307416292730318';
     var PREFIX = '/' + APP_ID + '/';
@@ -23,8 +25,16 @@ var Facebook = new function() {
         });
 
         me.login().then(function response(response) {
+        	console.log("logged in", response);
         	console.log(response.accessToken);
         	me.userId = response.userID;
+
+    	    me.getProfilePicture(me.userId).then(function(response) {
+    	    	console.log(response);
+			}, function(error) {
+
+			});
+
     		me.getLeagues().then(function(data) {
     			console.log("leagues data", data);
     			for (var i =0; i < data.length; i++) {
@@ -39,6 +49,19 @@ var Facebook = new function() {
         	});
         }, function() {
         	console.log("error", response);
+        });
+    }
+
+    this.getProfilePicture = function(uid) {
+    	return new Promise(function(resolve, reject) {
+            FB.api(format(uid, 'picture'), function(response) {
+				if (response && !response.error && response.data) {
+					console.log("user", response);
+					resolve(response.data.url);
+				} else {
+					reject(response.error);
+				}
+			});
         });
     }
 
@@ -59,7 +82,7 @@ var Facebook = new function() {
     this.getMembers = function(leagueId) {
     	// TODO paging
         return new Promise(function(resolve, reject) {
-            FB.api(formatGetMembers(leagueId), function (response) {
+            FB.api(format(leagueId, 'members'), function (response) {
 				if (response && !response.error) {
 					resolve(response.data);
 				} else {
@@ -116,8 +139,8 @@ var Facebook = new function() {
     	});
     }
 
-    var formatGetMembers = function(id) {
-    	return '/' + id + '/members';
+    var format = function(id, edge) {
+    	return '/' + id + '/' + edge;
     }
 }
 module.exports = Facebook;

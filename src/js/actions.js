@@ -1,5 +1,14 @@
 import { createAction } from 'redux-actions';
 import Promise from 'bluebird';
+import Facebook from './facebook';
+
+export const FACEBOOK_LOGIN = createAction('FACEBOOK_LOGIN', () => {
+    Facebook.login().then(
+        () => dispatch({type: 'LOGGED_IN'}))
+    .catch(
+        () => dispatch({type: 'LOGGIN_FAILED'})
+    );
+});
 
 export const LOAD_SEASONS = createAction('LOAD_SEASONS', () => {
     return Promise.resolve([

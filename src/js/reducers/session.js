@@ -4,10 +4,19 @@ import { handleActions } from 'redux-actions';
 const initialState = {
     user: null,
     season: 1,
-    round: null
+    round: null,
+    loggedIn: false
 };
 
 export default handleActions({
+
+    LOGGED_IN: {
+        next(state, action) {
+            return update(state, {
+                loggedId: { $set: true }
+            })
+        }
+    }   
 
     LOAD_USER: {
         next(state, action) {
