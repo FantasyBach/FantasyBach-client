@@ -39,7 +39,10 @@ export default class extends React.Component {
     }
 
     render() {
-        const compClass = classNames(this.props.className, 'collapser')
+        const compClass = classNames(this.props.className, {
+            collapser: true,
+            collapsed: this.props.collapsed
+        });
 
         return (
            <div className={compClass} style={{ height: this.state.height }}>
