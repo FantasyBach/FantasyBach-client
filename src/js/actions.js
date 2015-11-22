@@ -3,11 +3,12 @@ import Promise from 'bluebird';
 import Facebook from './facebook';
 
 export const FACEBOOK_LOGIN = createAction('FACEBOOK_LOGIN', () => {
-    Facebook.login().then(
-        () => dispatch({type: 'LOGGED_IN'}))
-    .catch(
-        () => dispatch({type: 'LOGGIN_FAILED'})
-    );
+    return Promise.resolve([
+        {
+            accessToken: "CAAEXlZB7tJc4BAFQZCt0gOk4hDKAzky2lNPLCHj0AJGXtuQTGIkFRkRHhdvQgFB38RwwMb7ZBGumvKAVunrrqEUIrRW7JLTA3NQKxRuYZAlswiZAwlz6n1Geana8Du9GfCaEmUgZAJRF3u7TRac8YDjQTBeKhcxNMuuFB6GjHreOYqgZCm2Qmw0ZBienmjtR3wFUyYf9VwDc5pOZArNeljxA3",
+            userID: "726777167"
+        }
+    ]);
 });
 
 export const LOAD_SEASONS = createAction('LOAD_SEASONS', () => {

@@ -5,18 +5,19 @@ const initialState = {
     user: null,
     season: 1,
     round: null,
-    loggedIn: false
+    session: null
 };
 
 export default handleActions({
 
-    LOGGED_IN: {
+    FACEBOOK_LOGIN: {
         next(state, action) {
+            console.log("facebook_login", action.payload[0]);
             return update(state, {
-                loggedId: { $set: true }
-            })
+                session: { $set: action.payload }
+            });
         }
-    }   
+    },
 
     LOAD_USER: {
         next(state, action) {
