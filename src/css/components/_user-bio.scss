@@ -2,7 +2,19 @@
 
     .menu-container {
         width: 300px;
-        height: 150px;
         background-color: white;
+        color: rgb(75, 75, 75);
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
+    p {
+        font-weight: 300;
+    }
+
+    a {
+        float: right;
     }
 }

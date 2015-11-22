@@ -1,15 +1,34 @@
 import React from 'react';
+import slug from 'slug';
+import { Link } from 'react-router';
 
 import menu from './menu-decorator';
 
 @menu('user-bio')
 export default class extends React.Component {
 
+    static propTypes = {
+        user: React.PropTypes.object.isRequired
+    }
+
     render() {
+        const { user } = this.props;
+        const id = user.data.id;
+        const name = user.data.name;
+        const normalized = slug(name).toLowerCase();
 
         return (
             <div>
-                <h1>Test</h1>
+                <h2>{name}</h2>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                    sed do eiusmod tempor incididunt ut labore et dolore magna
+                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                    laboris nisi ut aliquip ex ea commodo consequat.
+                </p>
+                <Link to={`/contestant/${id}/${normalized}`}>
+                    See the full bio
+                </Link>
             </div>
         );
     }

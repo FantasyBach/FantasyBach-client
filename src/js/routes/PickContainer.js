@@ -106,7 +106,7 @@ export default class extends React.Component {
                                 onDeck: this.state.onDeck === cont.data.id
                             })
                             return (
-                                <UserBio>
+                                <UserBio user={cont}>
                                     <UserIcon
                                         user={cont}
                                         className={compClass}
