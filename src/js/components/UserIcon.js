@@ -1,6 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { DragSource, DropTarget } from 'react-dnd';
+import get from 'lodash/object/get';
+import contains from 'lodash/collection/contains';
 
 import FallbackImage from './FallbackImage';
 
@@ -42,6 +45,7 @@ import FallbackImage from './FallbackImage';
         isDragging: monitor.isDragging()
     })
 )
+@connect(state => state)
 export default class extends React.Component {
 
     static propTypes = {
@@ -54,6 +58,20 @@ export default class extends React.Component {
         const { user, className, onClick, dragSource, dropTarget } = this.props;
         const compClass = classNames('user-icon', className);
 
+        const seasonId = this.props.session.season;
+        const picks = this.props.session.user.picks;
+        const season = this.props.seasons[seasonId];
+        const roundId = this.props.session.round;
+        const roundIds = season.data.roundIds;
+        const index = roundIds.indexOf(roundId);
+        const lastThreeRounds = roundIds.slice(index - 2, index).reverse();
+
+        let multiplier = 0;
+        for (let i = 0; i < lastThreeRounds.length; i++) {
+            if (contains(get(picks, roundId, {}), user.id)) multiplier++;
+            else break;
+        }
+
         return dropTarget(dragSource(
             <div className={compClass} onClick={onClick}>
                 <FallbackImage className="image" src={user.data.images.head} alt={user.data.name}>
@@ -61,6 +79,7 @@ export default class extends React.Component {
                         {user.data.name}
                     </div>
                 </FallbackImage>
+                {multiplier ? <span className="multiplier">{'x' + (multiplier + 1)}</span> : null}
             </div>
         ));
     }
