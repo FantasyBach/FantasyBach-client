@@ -17,7 +17,8 @@ export default class extends React.Component {
     constructor(props, ctx) {
         super(props, ctx);
         this.state = {
-            height: 0
+            height: 0,
+            transitioning: null
         }
     }
 
@@ -35,7 +36,12 @@ export default class extends React.Component {
         const node = this.refs.ruler;
         const h = node && !collapsed ? node.clientHeight : 0;
         const height = Math.max(min, Math.min(max, collapsed ? 0 : h));
-        this.setState({ height });
+        if (height === this.state.height) return;
+        if (this.state.transition) clearTimeout(this.state.transition);
+        this.setState({
+            height: height,
+            transition: setTimeout(() => this.setState({ transition: null }), 250)
+        });
     }
 
     render() {
@@ -44,8 +50,13 @@ export default class extends React.Component {
             collapsed: this.props.collapsed
         });
 
+        const style = {
+            overflow: this.state.transition || this.props.collapsed ? 'hidden' : 'visible',
+            height: this.state.transition || this.props.collapsed ? this.state.height : undefined
+        };
+
         return (
-           <div className={compClass} style={{ height: this.state.height }}>
+           <div className={compClass} style={style}>
                <div ref="ruler">
                    {this.props.children}
                </div>
