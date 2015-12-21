@@ -2,6 +2,7 @@
 
 .menu {
     position: relative;
+    display: inline-block;
 
     .menu-container {
         max-height: 75vh;
@@ -19,7 +20,7 @@
         position: absolute;
         top: calc(100% + 7px);
         left: 20px;
-        z-index: 2;
+        z-index: 10;
     }
 
     .menu-arrow {
@@ -62,6 +63,7 @@
             background-color: white;
             cursor: pointer;
             transition: padding-left .2s ease;
+            text-decoration: none;
 
             &:hover { background-color: rgb(250, 250, 250); }
             &:active { background-color: rgb(245, 245, 245); }

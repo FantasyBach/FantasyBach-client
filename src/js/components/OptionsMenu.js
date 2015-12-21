@@ -21,7 +21,7 @@ export default class OptionsMenu extends React.Component {
                     selected: React.PropTypes.bool,
                     to: React.PropTypes.string,      // one
                     href: React.PropTypes.string,    // of
-                    onClick: React.PropTypes.string  // these
+                    onClick: React.PropTypes.func    // these
                 })
             )
         )

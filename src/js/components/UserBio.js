@@ -2,9 +2,13 @@ import React from 'react';
 import slug from 'slug';
 import { Link } from 'react-router';
 
-import menu from './menu-decorator';
+import menu from './hoverMenu-decorator';
 
-@menu('user-bio')
+@menu({
+    className: 'role-bio',
+    inDelay: 1000,
+    outDelay: 200
+})
 export default class extends React.Component {
 
     static propTypes = {
