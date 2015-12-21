@@ -3,9 +3,15 @@ import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
 import find from 'lodash/collection/find';
 import reduce from 'lodash/collection/reduce';
+import get from 'lodash/object/get';
 import classNames from 'classnames';
 
-import { PICK_CONTESTANT, UNPICK_CONTESTANT } from '../actions';
+import {
+    LOAD_LEAGUES,
+    CREATE_LEAGUE,
+    PICK_CONTESTANT,
+    UNPICK_CONTESTANT
+} from '../actions';
 import { middleware, RESOLVED, PENDING, REJECTED } from '../util/middleware-decorator';
 import UserIcon from '../components/UserIcon';
 import UserBio from '../components/UserBio';
@@ -15,7 +21,12 @@ import Collapser from '../components/Collapser';
 import OptionsMenu from '../components/OptionsMenu';
 
 @connect(state => state)
-@middleware([])
+@middleware([
+    {
+        key: '$leagues',
+        handle: props => props.dispatch(LOAD_LEAGUES())
+    }
+])
 export default class extends React.Component {
 
     constructor(props, ctx) {
@@ -27,27 +38,28 @@ export default class extends React.Component {
         };
     }
 
+    componentWillUnmount() {
+        window.document.removeEventListener('click', this.popDeck);
+    }
+
     @autobind
     toggleOptions() {
         this.setState({ optionsOpen: !this.state.optionsOpen });
     }
 
     @autobind
-    clearDeck() {
-        if (this.state.onDeck) this.setState({ onDeck: null });
-    }
-
-    @autobind
     onDeck(user) {
-        this.setState({ onDeck: user.data.id })
+        this.setState({ onDeck: user.data.id });
+        window.document.addEventListener('click', this.popDeck);
     }
 
     @autobind
-    popDeck(role) {
-        if (this.state.onDeck) {
+    popDeck(evt, role) {
+        if (this.state.onDeck && role) {
             this.pickContestant(role.data.id, this.state.onDeck);
-            this.clearDeck();
         }
+        this.setState({ onDeck: null });
+        window.document.removeEventListener('click', this.popDeck);
     }
 
     @autobind
@@ -57,9 +69,14 @@ export default class extends React.Component {
     }
 
     @autobind
-    unpickContestant(role) {
+    unpickContestant(role, cont) {
         const roundId = this.props.session.round;
-        this.props.dispatch(UNPICK_CONTESTANT(roundId, role.data.id));
+        this.props.dispatch(UNPICK_CONTESTANT(roundId, cont.data.id, role.data.id));
+    }
+
+    @autobind
+    createLeague() {
+        this.props.dispatch(CREATE_LEAGUE());
     }
 
     render() {
@@ -86,8 +103,39 @@ export default class extends React.Component {
             this.state.optionsOpen :
             !left;
 
+        const leagues = [];
+        let leagueName = this.props.session.leagues[0].name;
+        this.props.session.leagues.forEach(data => {
+            if (data.id === this.props.params.league) leagueName = data.name;
+            leagues.push({
+                label: data.name,
+                to: data.id ? `/league/${data.id}` : '/'
+            });
+        });
+
+        leagues
+
+        const roundStart = new Date(round.data.startVoteLocalDateTime);
+        const roundEnd = new Date(round.data.endVoteLocalDateTime);
+        const now = new Date();
+        let roundStatus = null;
+
+        if (roundStart > now) {
+            roundStatus = (
+                <div className="round-status">
+                    <span>{`Voting opens ${round.data.startVoteLocalDateTime}`}</span>
+                </div>
+            );
+        } else if (roundEnd < now) {
+            roundStatus = (
+                <div className="round-status">
+                    <span>{`Voting closed`}</span>
+                </div>
+            );
+        }
+
         return (
-            <div onClick={this.clearDeck}>
+            <div>
                 <section className={this.state.onDeck ? 'onDeck pick-container' : 'pick-container'}>
 
                     <div className="picks">
@@ -95,21 +143,20 @@ export default class extends React.Component {
                             <label>fName lName</label>
                         </div>
                         {roles.map(role => {
-                            const pick = picks[role.data.id];
+                            const pick = picks ? picks[role.data.id] : null;
                             const user = pick ? this.props.contestants[pick.contestantId] : null;
 
                             const content = pick ?
                                 <UserIcon
                                     user={user}
                                     role={role}
-                                    onClick={this.unpickContestant}
-                                    onClick={e => this.unpickContestant(role)}
-                                    onDrop={e => this.popDeck(role)}
+                                    onClick={e => this.unpickContestant(role, user)}
+                                    onDrop={e => this.popDeck(e, role)}
                                 /> :
                                 <Slot
                                     role={role}
-                                    onClick={e => this.popDeck(role)}
-                                    onDrop={e => this.popDeck(role)}
+                                    onClick={e => this.popDeck(e, role)}
+                                    onDrop={e => this.popDeck(e, role)}
                                 /> ;
 
                             return (
@@ -126,6 +173,7 @@ export default class extends React.Component {
                         <span className="fa fa-chevron-up" onClick={this.toggleOptions} />
                     }
                     <Collapser className="options" collapsed={collapsed}>
+                        {roundStatus}
                         {available.map(cont => {
                             const compClass = classNames({
                                 option: true,
@@ -148,12 +196,16 @@ export default class extends React.Component {
                         })}
                     </Collapser>
                 </section>
-                <section>
+                <hr />
+                <section className="league-section">
                     <div>
 
                     </div>
-                    <OptionsMenu groups={[]}>
-                        Global
+                    <OptionsMenu groups={[leagues, [{ label: 'Create a League', onClick: this.createLeague }]]}>
+                        <h3>
+                            <span className="fa fa-chevron-down" />
+                            {' ' + leagueName}
+                        </h3>
                     </OptionsMenu>
                 </section>
                 {this.props.children}

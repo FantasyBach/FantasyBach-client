@@ -31,7 +31,7 @@ export default class extends React.Component {
                     laboris nisi ut aliquip ex ea commodo consequat.
                 </p>
                 <Link to={`/contestant/${id}/${normalized}`}>
-                    See the full bio
+                    See their full bio
                 </Link>
             </div>
         );

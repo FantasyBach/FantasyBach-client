@@ -1,58 +1,13 @@
 import Promise from 'bluebird';
 
-var Facebook = new function() {
+var createFacebook = function() {
     var APP_ID = '307416292730318';
     var PREFIX = '/' + APP_ID + '/';
     var GROUP = PREFIX + 'groups';
 
-    var me = this;
+    var me = {};
 
-    // Load the SDK asynchronously
-	(function(d, s, id) {
-	    var js, fjs = d.getElementsByTagName(s)[0];
-	    if (d.getElementById(id)) return;
-	    js = d.createElement(s); js.id = id;
-	    js.src = "//connect.facebook.net/en_US/sdk.js";
-	    fjs.parentNode.insertBefore(js, fjs);
-	}(document, 'script', 'facebook-jssdk'));
-
-    window.fbAsyncInit = function() {
-        FB.init({
-            appId: APP_ID,
-            cookie: true,
-            xfbml: false,
-            version: 'v2.2'
-        });
-
-        me.login().then(function response(response) {
-        	console.log("logged in", response);
-        	console.log(response.accessToken);
-        	me.userId = response.userID;
-
-    	    me.getProfilePicture(me.userId).then(function(response) {
-    	    	console.log(response);
-			}, function(error) {
-
-			});
-
-    		me.getLeagues().then(function(data) {
-    			console.log("leagues data", data);
-    			for (var i =0; i < data.length; i++) {
-    				me.getMembers(data[i].id).then(function(d) {
-    					console.log("Got group info ", d);
-    				}, function(error) {
-    					console.log("error", error);
-    				});
-    			}
-        	}, function() {
-        		console.log("error ", data);
-        	});
-        }, function() {
-        	console.log("error", response);
-        });
-    }
-
-    this.getProfilePicture = function(uid) {
+    me.getProfilePicture = function(uid) {
     	return new Promise(function(resolve, reject) {
             FB.api(format(uid, 'picture'), function(response) {
 				if (response && !response.error && response.data) {
@@ -65,7 +20,7 @@ var Facebook = new function() {
         });
     }
 
-    this.getLeagues = function() {
+    me.getLeagues = function() {
         return new Promise(function(resolve, reject) {
             FB.api(GROUP, 'GET', {
             	auth_token: me.accessToken
@@ -79,7 +34,7 @@ var Facebook = new function() {
         });
     }
 
-    this.getMembers = function(leagueId) {
+    me.getMembers = function(leagueId) {
     	// TODO paging
         return new Promise(function(resolve, reject) {
             FB.api(format(leagueId, 'members'), function (response) {
@@ -92,7 +47,7 @@ var Facebook = new function() {
         });
     }
 
-    this.createGroup = function() {
+    me.createGroup = function() {
     	return new Promise(function(resolve, reject) {
 	    	FB.ui({
 			  method: 'game_group_create',
@@ -111,7 +66,7 @@ var Facebook = new function() {
 	    });
     }
 
-    this.login = function() {
+    me.login = function() {
         return new Promise(function(resolve, reject) {
             FB.getLoginStatus(function(response) {
             	console.log("loging", response);
@@ -127,7 +82,7 @@ var Facebook = new function() {
         });
     }
 
-    this.logout = function() {
+    me.logout = function() {
     	return new Promise(function(resolve, reject) {
     		FB.logout(function(response) {
     			if (response && !response.error) {
@@ -142,5 +97,27 @@ var Facebook = new function() {
     var format = function(id, edge) {
     	return '/' + id + '/' + edge;
     }
+
+    return new Promise(function(res, rej) {
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId: APP_ID,
+                cookie: true,
+                xfbml: false,
+                version: 'v2.2'
+            });
+
+            res(me);
+        };
+
+        // Load the SDK asynchronously
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    });
 }
-module.exports = Facebook;
+module.exports = createFacebook;

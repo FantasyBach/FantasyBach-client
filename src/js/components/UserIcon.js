@@ -56,7 +56,7 @@ export default class extends React.Component {
 
         return dropTarget(dragSource(
             <div className={compClass} onClick={onClick}>
-                <FallbackImage className="image" src={user.data.images.large} alt={user.data.name}>
+                <FallbackImage className="image" src={user.data.images.head} alt={user.data.name}>
                     <div className="user-icon-fallback">
                         {user.data.name}
                     </div>

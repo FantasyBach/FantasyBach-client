@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Route, IndexRoute } from 'react-router';
+import { Route, IndexRoute, Link } from 'react-router';
 import Promise from 'bluebird';
 
 import {
+    INIT_FACEBOOK,
     FACEBOOK_LOGIN,
     LOAD_SEASONS,
     LOAD_CONTESTANTS,
@@ -14,6 +15,7 @@ import {
 } from './actions';
 import { middleware, RESOLVED } from './util/middleware-decorator';
 import OptionsMenu from './components/OptionsMenu';
+import Loading from './components/Loading';
 
 // Routes
 import Login from './routes/Login';
@@ -25,19 +27,25 @@ import PickContainer from './routes/PickContainer';
 @connect(state => state)
 @middleware([
     {
+        key: '$init',
+        handle: props => props.dispatch(INIT_FACEBOOK())
+    },
+    {
         key: '$login',
         handle: props => props.dispatch(FACEBOOK_LOGIN())
     },
     {
         key: '$season',
-        handle: props => props.dispatch(LOAD_SEASONS())
+        handle: props => Promise.all([
+            props.dispatch(LOAD_SEASONS()),
+            props.dispatch(LOAD_USER(1))
+        ])
     },
     {
         key: '$deps',
         watch: props => 1, // TODO seasonId
         handle: (props, seasonId) => Promise.all([
             props.dispatch(LOAD_CONTESTANTS(seasonId)),
-            props.dispatch(LOAD_USER(seasonId)),
             props.dispatch(LOAD_ROUNDS(seasonId)),
             props.dispatch(LOAD_ROLES(seasonId))
         ])
@@ -61,7 +69,7 @@ class App extends React.Component {
             weekOptions = rounds
                 .filter(round => true)
                 .map(round => ({
-                    label: `Week ${round.data.index}`,
+                    label: `Week ${round.data.index + 1}`,
                     onClick: () => this.props.dispatch(CHANGE_ROUND(round.data.id)),
                     selected: round.data.id === roundId
                 }));
@@ -77,15 +85,36 @@ class App extends React.Component {
             ]
         ]
 
+        let content = null;
+
+        // case: loading
+        if (this.props.loading) {
+            content = <Loading />;
+        }
+
+        // case: error
+        else if (this.props.error) {
+            content = <div>Error</div>;
+        }
+
+        else {
+            content = this.props.children;
+        }
+
         return (
             <main className="app">
                 <header>
-                    <h1>Fantasy Bachelor</h1>
+                    <Link to={'/'}>
+                        <h1>Fantasy Bachelor</h1>
+                    </Link>
                     <OptionsMenu groups={menuOptions}>
-                        <h3>{round ? `Week ${round.data.index}` : ''}</h3>
+                        <h3>
+                            <span className="fa fa-chevron-down" />
+                            {round ? ` Week ${round.data.index + 1}` : ''}
+                        </h3>
                     </OptionsMenu>
                 </header>
-                {this.props.loading ? null : this.props.children}
+                {content}
                 <footer>
 
                 </footer>
@@ -103,6 +132,6 @@ export default (
         </Route>
         <Route path="/login" component={Login} />
         <Route path="/about" component={About} />
-        <Route path="/contestant/:contestant" component={ViewContestant} />
+        <Route path="/contestant/:contestant/:name" component={ViewContestant} />
     </Route>
 );
