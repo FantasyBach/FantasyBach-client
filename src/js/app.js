@@ -22,6 +22,7 @@ import Login from './routes/Login';
 import About from './routes/About';
 import ViewContestant from './routes/ViewContestant';
 import ViewLeague from './routes/ViewLeague';
+import GlobalLeague from './routes/GlobalLeague';
 import PickContainer from './routes/PickContainer';
 
 @connect(state => state)
@@ -127,7 +128,7 @@ export default (
     <Route component={App}>
         <Route component={PickContainer}>
             <Route path="/login" component={Login} />
-            <Route path="/" component={Login} />
+            <Route path="/" component={GlobalLeague} />
             <Route path="/league/:league" component={ViewLeague} />
         </Route>
         <Route path="/login" component={Login} />
