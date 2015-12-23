@@ -58,6 +58,49 @@ main {
     > footer {
         margin: 10px;
     }
+
+    .login {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+
+        .banner {
+            margin-top: 20px;
+            width: 100%;
+
+            .bg {
+                position: absolute;
+                background: rgba(255, 255, 255, .4);
+                width: 100vw;
+                height: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .img {
+                overflow: hidden;
+            }
+
+            img {
+                display: block;
+                width: 100%;
+                min-width: 800px;
+            }
+        }
+
+        button {
+            background: #3B5998;
+            border: none;
+            color: rgb(230, 230, 230);
+            padding: 15px 20px;
+            font-size: 2rem;
+            border-radius: 5px;
+            outline: none;
+            cursor: pointer;
+            margin: 20px;
+        }
+    }
 }
 
 #fb-root {

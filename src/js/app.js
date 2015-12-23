@@ -74,11 +74,22 @@ class App extends React.Component {
             ]
         ]
 
-        let content = null;
+        // case: couldn't log in
+        if (error && $init === RESOLVED && $login === REJECTED) {
+            content = (
+                <div className="login">
+                    <div className="banner">
+                        <div className="bg" />
+                        <div className="img">
+                            <img src="/static/image/contestants.jpg" />
+                        </div>
+                    </div>
 
-        // case: loading
-        if (this.props.loading) {
-            content = <Loading />;
+                    <button onClick={this.login}>
+                        Login with Facebook
+                    </button>
+                </div>
+            );
         }
 
         // case: error
