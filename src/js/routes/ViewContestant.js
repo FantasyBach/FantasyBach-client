@@ -10,7 +10,7 @@ export default class extends React.Component {
 
     render() {
         const { contestants, params } = this.props;
-        const contestant = contestants[params.contestant];
+        const contestant = contestants[`contestant:${params.contestant}`];
 
         return (
             <div className="view-contestant">
