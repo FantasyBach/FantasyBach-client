@@ -106,7 +106,7 @@ class App extends React.Component {
             <main className="app">
                 <header>
                     <Link to={'/'}>
-                        <h1>Fantasy Bachelor</h1>
+                        <img src="/static/image/logo.png" />
                     </Link>
                     <OptionsMenu groups={menuOptions}>
                         <h3>
