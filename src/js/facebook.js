@@ -67,6 +67,16 @@ var createFacebook = function() {
     }
 
     me.login = function() {
+        return new Promise(function(res, rej) {
+            FB.login(function(response) {
+                if (response.authResponse) {
+                    res(response.authResponse);
+                }
+            });
+        });
+    }
+
+    me.getLoginStatus = function() {
         return new Promise(function(resolve, reject) {
             FB.getLoginStatus(function(response) {
             	console.log("loging", response);

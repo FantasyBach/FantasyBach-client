@@ -5,18 +5,32 @@ import sdk from 'fantasybach-sdk';
 
 let client = sdk.newClient();
 let fb = null;
-const seasonId = '100905a6-90d7-11e5-8994-feff819cdc9f';
+const seasonId = 'season:NJWJTpZ8x';
 
 export const INIT_FACEBOOK = createAction('INIT_FACEBOOK', () => {
     return createFacebook().then(f => fb = f);
 });
 
 export const FACEBOOK_LOGIN = createAction('FACEBOOK_LOGIN', () => {
+    return fb.getLoginStatus()
+        .then(function(response) {
+            return client.login({token : response.accessToken});
+        }).get('data')
+        .tap(function(response) {
+            client = sdk.newClient({
+                accessKey: response.accessKey,
+                secretKey: response.secretKey,
+                sessionToken: response.sessionToken
+            })
+        });
+});
+
+export const LOGIN = createAction('LOGIN', () => {
     return fb.login()
         .then(function(response) {
             return client.login({token : response.accessToken});
         }).get('data')
-        .then(function(response) {
+        .tap(function(response) {
             client = sdk.newClient({
                 accessKey: response.accessKey,
                 secretKey: response.secretKey,

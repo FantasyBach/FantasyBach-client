@@ -17,11 +17,16 @@ export default handleActions({
 
     FACEBOOK_LOGIN: {
         next(state, action) {
-            console.log("facebook_login", action.payload);
             return update(state, {
                 session: { $set: action.payload }
             });
         }
+    },
+
+    LOGIN(state, action) {
+        return update(state, {
+            session: { $set: action.payload }
+        });
     },
 
     LOAD_USER: {

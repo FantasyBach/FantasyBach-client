@@ -2,10 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Route, IndexRoute, Link } from 'react-router';
 import Promise from 'bluebird';
+import autobind from 'autobind-decorator';
 
 import {
     INIT_FACEBOOK,
     FACEBOOK_LOGIN,
+    LOGIN,
     LOAD_SEASONS,
     LOAD_CONTESTANTS,
     LOAD_USER,
@@ -13,7 +15,7 @@ import {
     LOAD_ROLES,
     CHANGE_ROUND
 } from './actions';
-import { middleware, RESOLVED } from './util/middleware-decorator';
+import { middleware, RESOLVED, REJECTED } from './util/middleware-decorator';
 import OptionsMenu from './components/OptionsMenu';
 import Loading from './components/Loading';
 
@@ -33,48 +35,34 @@ import PickContainer from './routes/PickContainer';
     },
     {
         key: '$login',
-        handle: props => props.dispatch(FACEBOOK_LOGIN())
-    },
-    {
-        key: '$season',
-        handle: props => Promise.all([
-            props.dispatch(LOAD_SEASONS()),
-            props.dispatch(LOAD_USER(1))
-        ])
+        watch: props => !!props.session.session,
+        handle: (props, session) => session || props.dispatch(FACEBOOK_LOGIN())
     },
     {
         key: '$deps',
-        watch: props => 1, // TODO seasonId
-        handle: (props, seasonId) => Promise.all([
-            props.dispatch(LOAD_CONTESTANTS(seasonId)),
-            props.dispatch(LOAD_ROUNDS(seasonId)),
-            props.dispatch(LOAD_ROLES(seasonId))
+        watch: props => !!props.session.session,
+        handle: (props, session) => session && Promise.all([
+            props.dispatch(LOAD_SEASONS()),
+            props.dispatch(LOAD_USER(1)),
+            props.dispatch(LOAD_CONTESTANTS()),
+            props.dispatch(LOAD_ROUNDS()),
+            props.dispatch(LOAD_ROLES())
         ])
     }
 ])
 class App extends React.Component {
 
+    @autobind
+    login() {
+        this.props.dispatch(LOGIN());
+    }
+
     render() {
+        const { $init, $login, $deps, loading, error } = this.props;
         let weekOptions = [];
         let round = null;
 
-        if (this.props.$deps === RESOLVED) {
-            const seasonId = this.props.session.season;
-            const season = this.props.seasons[seasonId];
-            const roundId = this.props.session.round;
-            const rounds = season.data.roundIds.map(id => {
-                return this.props.rounds[id];
-            });
-
-            round = this.props.rounds[roundId];
-            weekOptions = rounds
-                .filter(round => true)
-                .map(round => ({
-                    label: `Week ${round.data.index + 1}`,
-                    onClick: () => this.props.dispatch(CHANGE_ROUND(round.data.id)),
-                    selected: round.data.id === roundId
-                }));
-        }
+        let content = null;
 
         const menuOptions = [
             weekOptions,
@@ -94,12 +82,33 @@ class App extends React.Component {
         }
 
         // case: error
-        else if (this.props.error) {
+        else if (error) {
             content = <div>Error</div>;
+        }
+
+        // case: loading
+        else if ($deps !== RESOLVED || !this.props.session.session) {
+            content = <Loading />;
         }
 
         else {
             content = this.props.children;
+
+            const seasonId = this.props.session.season;
+            const season = this.props.seasons[seasonId];
+            const roundId = this.props.session.round;
+            const rounds = season.data.roundIds.map(id => {
+                return this.props.rounds[id];
+            });
+
+            round = this.props.rounds[roundId];
+            weekOptions = rounds
+                .filter(round => true)
+                .map(round => ({
+                    label: `Week ${round.data.index + 1}`,
+                    onClick: () => this.props.dispatch(CHANGE_ROUND(round.data.id)),
+                    selected: round.data.id === roundId
+                }));
         }
 
         return (
