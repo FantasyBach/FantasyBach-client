@@ -58,9 +58,7 @@ export default class extends React.Component {
         const { user, className, onClick, dragSource, dropTarget } = this.props;
         const compClass = classNames('user-icon', className);
 
-        const seasonId = this.props.session.season;
         const picks = this.props.session.user.picks;
-        const season = this.props.seasons[seasonId];
         const roundId = this.props.session.round;
         const roundIds = season.data.roundIds;
         const index = roundIds.indexOf(roundId);

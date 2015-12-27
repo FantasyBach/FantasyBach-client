@@ -81,8 +81,6 @@ export default class extends React.Component {
 
     render() {
         const user = this.props.session.user;
-        const seasonId = this.props.session.season;
-        const season = this.props.seasons[seasonId];
         const roundId = this.props.session.round;
         const round = this.props.rounds[roundId];
 

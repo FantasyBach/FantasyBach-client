@@ -8,7 +8,6 @@ import {
     INIT_FACEBOOK,
     FACEBOOK_LOGIN,
     LOGIN,
-    LOAD_SEASONS,
     LOAD_CONTESTANTS,
     LOAD_USER,
     LOAD_ROUNDS,
@@ -42,8 +41,7 @@ import PickContainer from './routes/PickContainer';
         key: '$deps',
         watch: props => !!props.session.session,
         handle: (props, session) => session && Promise.all([
-            props.dispatch(LOAD_SEASONS()),
-            props.dispatch(LOAD_USER(1)),
+            props.dispatch(LOAD_USER()),
             props.dispatch(LOAD_CONTESTANTS()),
             props.dispatch(LOAD_ROUNDS()),
             props.dispatch(LOAD_ROLES())
@@ -105,8 +103,6 @@ class App extends React.Component {
         else {
             content = this.props.children;
 
-            const seasonId = this.props.session.season;
-            const season = this.props.seasons[seasonId];
             const roundId = this.props.session.round;
             const rounds = season.data.roundIds.map(id => {
                 return this.props.rounds[id];

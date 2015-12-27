@@ -3,7 +3,6 @@ import {createStore, applyMiddleware, combineReducers} from 'redux';
 import contestants from './reducers/contestants';
 import roles from './reducers/roles';
 import rounds from './reducers/rounds';
-import seasons from './reducers/seasons';
 import session from './reducers/session';
 
 
@@ -11,7 +10,6 @@ const reducer = combineReducers({
     contestants,
     roles,
     rounds,
-    seasons,
     session
 });
 

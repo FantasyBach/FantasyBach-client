@@ -29,21 +29,7 @@ export const LOGIN = createAction('LOGIN', () => {
         });
 });
 
-export const LOAD_SEASONS = createAction('LOAD_SEASONS', () => {
-    return Promise.resolve([
-        {
-            id: 1,
-            icon: 'https://robohash.org/bachelor.jpg?bgset=bg2',
-            roundIds: [
-                "55baf478-90ec-11e5-8994-feff819cdc9f",
-                "bfcf0ace-90ed-11e5-8994-feff819cdc9f",
-                "d26400ea-90ed-11e5-8994-feff819cdc9f"
-            ]
-        }
-    ]);
-});
-
-export const LOAD_USER = createAction('LOAD_USER', seasonId => {
+export const LOAD_USER = createAction('LOAD_USER', () => {
     return Promise.resolve(sdk.getCurrentUser({ seasonId })).get('data');
 });
 
