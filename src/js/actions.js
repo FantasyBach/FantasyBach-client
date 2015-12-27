@@ -1,9 +1,9 @@
 import { createAction } from 'redux-actions';
 import Promise from 'bluebird';
 import createFacebook from './facebook';
-import sdk from 'fantasybach-sdk';
+import { FantasyBachSdk } from 'fantasybach-sdk';
 
-let client = sdk.newClient();
+let sdk = new FantasyBachSdk();
 let fb = null;
 const seasonId = 'season:NJWJTpZ8x';
 
@@ -14,28 +14,18 @@ export const INIT_FACEBOOK = createAction('INIT_FACEBOOK', () => {
 export const FACEBOOK_LOGIN = createAction('FACEBOOK_LOGIN', () => {
     return fb.getLoginStatus()
         .then(function(response) {
-            return client.login({token : response.accessToken});
+            return sdk.login({token : response.accessToken});
         }).get('data')
         .tap(function(response) {
-            client = sdk.newClient({
-                accessKey: response.accessKey,
-                secretKey: response.secretKey,
-                sessionToken: response.sessionToken
-            })
         });
 });
 
 export const LOGIN = createAction('LOGIN', () => {
     return fb.login()
         .then(function(response) {
-            return client.login({token : response.accessToken});
+            return sdk.login({token : response.accessToken});
         }).get('data')
         .tap(function(response) {
-            client = sdk.newClient({
-                accessKey: response.accessKey,
-                secretKey: response.secretKey,
-                sessionToken: response.sessionToken
-            })
         });
 });
 
@@ -54,27 +44,27 @@ export const LOAD_SEASONS = createAction('LOAD_SEASONS', () => {
 });
 
 export const LOAD_USER = createAction('LOAD_USER', seasonId => {
-    return Promise.resolve(client.getCurrentUser({ seasonId })).get('data');
+    return Promise.resolve(sdk.getCurrentUser({ seasonId })).get('data');
 });
 
 export const LOAD_CONTESTANTS = createAction('LOAD_CONTESTANTS', () => {
-    return Promise.resolve(client.getContestants({ seasonId })).get('data');
+    return Promise.resolve(sdk.getContestants({ seasonId })).get('data');
 });
 
 export const LOAD_ROUNDS = createAction('LOAD_ROUNDS', () => {
-    return Promise.resolve(client.getRounds({ seasonId })).get('data');
+    return Promise.resolve(sdk.getRounds({ seasonId })).get('data');
 });
 
 export const LOAD_ROLES = createAction('LOAD_ROLES', () => {
-    return Promise.resolve(client.getRoles({ seasonId })).get('data');
+    return Promise.resolve(sdk.getRoles({ seasonId })).get('data');
 });
 
 export const PICK_CONTESTANT = createAction('PICK_CONTESTANT', (roundId, roleId, contestantId) => {
-    return Promise.resolve(client.postPick({ seasonId, roundId }, { roleId, contestantId })).get('data');
+    return Promise.resolve(sdk.postPick({ seasonId, roundId }, { roleId, contestantId })).get('data');
 }, meta);
 
 export const UNPICK_CONTESTANT = createAction('UNPICK_CONTESTANT', (roundId, roleId, contestantId) => {
-    return Promise.resolve(client.deletePick({ seasonId, roundId }, { roleId, contestantId })).get('data');
+    return Promise.resolve(sdk.deletePick({ seasonId, roundId }, { roleId, contestantId })).get('data');
 }, meta);
 
 export const LOAD_LEAGUES = createAction('LOAD_LEAGUES', () => {
@@ -95,7 +85,7 @@ export const CHANGE_LEAGUE = createAction('CHANGE_LEAGUE', id => {
 
 export const LOAD_MEMBERS = createAction('LOAD_MEMBERS', id => {
     return fb.getMembers(id)
-        .then(members => client.getUsersById({
+        .then(members => sdk.getUsersById({
             seasonId: seasonId,
             ids: members.map(user => user.id)
         }));
