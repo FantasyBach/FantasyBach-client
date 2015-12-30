@@ -3,6 +3,6 @@ FantasyBach-client
 
 ```js
 npm install
-grunt browserify
+grunt
 npm start
 ```

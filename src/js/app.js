@@ -79,7 +79,7 @@ class App extends React.Component {
                     <div className="banner">
                         <div className="bg" />
                         <div className="img">
-                            <img src="/static/image/contestants.jpg" />
+                            <img src={STATIC_URL_BASE + "/images/contestants.jpg"} />
                         </div>
                     </div>
 
@@ -122,7 +122,7 @@ class App extends React.Component {
             <main className="app">
                 <header>
                     <Link to={'/'}>
-                        <img src="/static/image/logo.png" />
+                        <img src={STATIC_URL_BASE + "/images/logo.png"} />
                     </Link>
                     <OptionsMenu groups={menuOptions}>
                         <h3>
