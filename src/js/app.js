@@ -74,6 +74,11 @@ class App extends React.Component {
 
         // case: couldn't log in
         if (error && $init === RESOLVED && $login === REJECTED) {
+
+            // TODO remove this:
+            var splashElement = document.getElementById('splash');
+            splashElement.parentNode.removeChild(splashElement);
+
             content = (
                 <div className="login">
                     <div className="banner">
@@ -97,6 +102,10 @@ class App extends React.Component {
 
         // case: loading
         else if ($deps !== RESOLVED || !this.props.session.session) {
+
+            // TODO remove this:
+            return <div></div>;
+
             content = <Loading />;
         }
 

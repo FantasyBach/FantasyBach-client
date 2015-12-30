@@ -2,15 +2,26 @@
 <html>
     <head>
         <title>Fantasy Bachelor</title>
-        <script>var STATIC_URL_BASE = "<%= staticUrl %>";</script>
-        <script async defer src="<%= staticUrl %>/js/client.js"></script>
-        <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'>
-        <link href="<%= staticUrl %>/css/client.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+        <link href="<%= staticUrl %>/css/splash.css" rel="stylesheet" type="text/css" />
     </head>
     <body>
+        <div id="splash">
+            <div class="spinner">
+                <div class="bounce1"></div>
+                <div class="bounce2"></div>
+            </div>
+            <div class="label">loading</div>
+        </div>
         <div id="container">
 
+        </div>
+        <div id="scripts">
+            <script>var STATIC_URL_BASE = "<%= staticUrl %>";</script>
+            <script async defer src="<%= staticUrl %>/js/client.js"></script>
+        </div>
+        <div id="stylesheets">
+            <link href="<%= staticUrl %>/css/client.css" rel="stylesheet" type="text/css" />
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
         </div>
     </body>
 </html>

@@ -60,7 +60,8 @@ module.exports = function(grunt) {
             },
             dev : {
                 files : {
-                    'build/css/client.css' : 'src/css/index.scss'
+                    'build/css/client.css' : 'src/css/index.scss',
+                    'build/css/splash.css' : 'src/css/splash.scss'
                 },
                 options : {
                     sourceMapEmbed : true
@@ -68,7 +69,8 @@ module.exports = function(grunt) {
             },
             dist : {
                 files : {
-                    'build/css/client.css' : 'src/css/index.scss'
+                    'build/css/client.css' : 'src/css/index.scss',
+                    'build/css/splash.css' : 'src/css/splash.scss'
                 },
                 options : {
                     sourceMapEmbed : false
